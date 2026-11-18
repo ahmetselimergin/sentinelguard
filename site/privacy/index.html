@@ -21,6 +21,7 @@
 <ul>
   <li><strong>Installed apps</strong> (QUERY_ALL_PACKAGES): package names, permissions, signing certificates and the app files themselves, to compare them with known malware and check for risky behaviour patterns.</li>
   <li><strong>Shared storage</strong> (All files access, MANAGE_EXTERNAL_STORAGE), only if you grant it and only when you start a file scan: files are read to compute their fingerprint (SHA-256) and, for app installers, their permissions, and compared with known malware on the device. If you don't grant it, you can instead pick a single folder. Files you quarantine are moved into the app's private storage and can be restored or deleted by you.</li>
+  <li><strong>Clean-up</strong>: with the same access, the app lists files that can be removed (leftover installers, identical duplicates, thumbnail caches, folders of uninstalled apps, empty folders, large files). Nothing is deleted unless you select it and confirm; deletion happens only on your device.</li>
   <li><strong>Links you paste or share</strong> to the app: analysed locally; the link is never opened or sent anywhere.</li>
   <li><strong>Device security settings</strong> (screen lock, patch level, USB debugging and similar) to show the device check.</li>
 </ul>
@@ -43,7 +44,7 @@
 <div lang="tr">
 <p>Sentinel Guard telefonunuzu <strong>cihaz üzerinde</strong> tarar. Uygulama listenizi, dosyalarınızı, kontrol ettiğiniz linkleri ya da herhangi bir kişisel veriyi yüklemez. Reklam, analiz aracı veya hesap yoktur.</p>
 <p>Uygulama; kurulu uygulamaların izinlerini, imza sertifikalarını ve dosyalarını, izin verirseniz ve yalnızca dosya taramasını başlattığınızda paylaşılan depolamadaki dosyaları ("Tüm dosyalara erişim"; vermezseniz yalnızca seçtiğiniz klasörü), paylaştığınız linkleri ve cihazın güvenlik ayarlarını, sadece tarama yapmak için ve yalnızca cihazda kullanır. Sonuçlar telefonunuzda kalır, bulut yedeklemesine dahil edilmez ve uygulama kaldırıldığında silinir.</p>
-<p>Tek ağ isteği, tehdit veritabanının <code>ahmetselimergin.github.io</code> adresinden indirilmesidir. Bu istek sizinle ilgili bilgi içermez ve her indirme kullanılmadan önce imzayla doğrulanır. Veri toplanmadığı için hiçbir veri paylaşılmaz veya satılmaz.</p>
+<p>Temizlik özelliği silinebilecek dosyaları yalnızca listeler; siz seçip onaylamadan hiçbir şey silinmez ve silme yalnızca cihazınızda yapılır. Tek ağ isteği, tehdit veritabanının <code>ahmetselimergin.github.io</code> adresinden indirilmesidir. Bu istek sizinle ilgili bilgi içermez ve her indirme kullanılmadan önce imzayla doğrulanır. Veri toplanmadığı için hiçbir veri paylaşılmaz veya satılmaz.</p>
 </div>
 </body>
 </html>
