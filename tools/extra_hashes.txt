@@ -1,0 +1,1 @@
+# Extra SHA-256 digests of confirmed malware to always include (one per line).

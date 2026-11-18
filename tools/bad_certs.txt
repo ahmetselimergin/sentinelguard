@@ -1,0 +1,3 @@
+# SHA-256 digests of APK signing certificates used by confirmed malware (one per line).
+# Only add certificates verified from multiple malicious samples; a wrong entry flags
+# every app signed with that key.

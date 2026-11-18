@@ -1,0 +1,57 @@
+# Rebuilds the signed threat database every day and publishes it to GitHub Pages
+# (served at https://<user>.github.io/sentinelguard/db/).
+#
+# Required repository secrets:
+#   ABUSECH_AUTH_KEY   free key from https://auth.abuse.ch/
+#   DB_SIGNING_KEY     contents of ~/keys/sentinelguard/threatdb-signing.pem
+# Optional:
+#   MB_EXPORT_URL      MalwareBazaar full-export URL from the abuse.ch portal ({key} is substituted)
+name: threat-db
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: threat-db
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out published site
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: published
+        continue-on-error: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build and sign bundle
+        env:
+          ABUSECH_AUTH_KEY: ${{ secrets.ABUSECH_AUTH_KEY }}
+          MB_EXPORT_URL: ${{ secrets.MB_EXPORT_URL }}
+          DB_SIGNING_KEY: ${{ secrets.DB_SIGNING_KEY }}
+        run: |
+          umask 077
+          printf '%s\n' "$DB_SIGNING_KEY" > "$RUNNER_TEMP/key.pem"
+          prev=""
+          [ -f published/db/manifest.json ] && prev="--previous published/db"
+          python3 tools/build_db.py --key "$RUNNER_TEMP/key.pem" --out out/site/db $prev
+          rm -f "$RUNNER_TEMP/key.pem"
+          cp -r site/. out/site/
+          touch out/site/.nojekyll
+      - name: Publish to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: out/site
+          publish_branch: gh-pages
+          force_orphan: true
