@@ -44,16 +44,41 @@ def post(url, data, key):
         return json.loads(r.read().decode())
 
 
-def get(url, key=None):
-    req = urllib.request.Request(url)
-    req.add_header("User-Agent", UA)
-    if key:
-        req.add_header("Auth-Key", key)
-    with urllib.request.urlopen(req, timeout=300) as r:
-        return r.read()
+def get(url, key=None, attempts=3):
+    """Downloads to a temp file in chunks and retries: the full export is ~230 MB and
+    a single truncated transfer must not fail the whole build."""
+    import tempfile
+    last = None
+    for i in range(attempts):
+        req = urllib.request.Request(url)
+        req.add_header("User-Agent", UA)
+        if key:
+            req.add_header("Auth-Key", key)
+        try:
+            with urllib.request.urlopen(req, timeout=300) as r, tempfile.TemporaryFile() as tmp:
+                while True:
+                    chunk = r.read(1 << 20)
+                    if not chunk:
+                        break
+                    tmp.write(chunk)
+                tmp.seek(0)
+                return tmp.read()
+        except urllib.error.HTTPError as e:
+            if e.code == 429:  # daily quota: retrying today is pointless
+                raise
+            last = e
+        except Exception as e:  # truncated transfer, reset, timeout
+            last = e
+        time.sleep(10 * (i + 1))
+    raise last
 
 
-def mb_hashes(key):
+MB_RECENT_EXPORT = "https://mb-api.abuse.ch/v2/files/exports/{key}/recent.csv"
+
+
+def mb_hashes(key, full):
+    """full=True pulls all history (~230 MB, quota-limited); otherwise the last 48 h,
+    which the accumulating bundle merges into what it already has."""
     out = set()
     # Android samples (the core of the app's detection)
     r = post("https://mb-api.abuse.ch/api/v1/", {"query": "get_file_type", "file_type": "apk", "limit": "1000"}, key)
@@ -61,8 +86,8 @@ def mb_hashes(key):
         out |= {d["sha256_hash"].lower() for d in r.get("data", []) if SHA256.match(d.get("sha256_hash", "").lower())}
     else:
         print("MalwareBazaar apk query:", r.get("query_status"), file=sys.stderr)
-    # Full dump (all history; abuse.ch allows ~4 downloads/day, we do one).
-    export = os.environ.get("MB_EXPORT_URL") or MB_FULL_EXPORT
+    export = os.environ.get("MB_EXPORT_URL") or (MB_FULL_EXPORT if full else MB_RECENT_EXPORT)
+    print("MalwareBazaar export:", "full" if full else "recent")
     out |= parse_export(get(export.replace("{key}", key), key))
     return out
 
@@ -145,6 +170,7 @@ def main():
     ap.add_argument("--previous", help="directory of the previously published bundle to merge")
     ap.add_argument("--offline", action="store_true", help="skip network sources")
     ap.add_argument("--host-ttl-days", type=int, default=90)
+    ap.add_argument("--full", action="store_true", help="force the full MalwareBazaar export")
     a = ap.parse_args()
 
     os.makedirs(a.out, exist_ok=True)
@@ -161,13 +187,25 @@ def main():
         key = os.environ.get("ABUSECH_AUTH_KEY")
         if not key:
             sys.exit("ABUSECH_AUTH_KEY is not set (use --offline to sign local data only)")
+        have_previous = len(hashes) > 1000
+        full = a.full or not have_previous or dt.datetime.now(dt.timezone.utc).weekday() == 6
         before = len(hashes)
-        hashes |= mb_hashes(key)
+        try:
+            hashes |= mb_hashes(key, full)
+        except Exception as e:
+            # Keep publishing the previous data rather than failing; but never ship an
+            # empty database because a source was down.
+            if not have_previous:
+                raise
+            print(f"WARNING: MalwareBazaar failed ({e}); keeping previous hashes", file=sys.stderr)
         print(f"MalwareBazaar: +{len(hashes) - before} hashes")
-        fresh = urlhaus_hosts(key)
-        for h in fresh:
-            hosts_state[h] = now
-        print(f"URLhaus: {len(fresh)} active hosts")
+        try:
+            fresh = urlhaus_hosts(key)
+            for h in fresh:
+                hosts_state[h] = now
+            print(f"URLhaus: {len(fresh)} active hosts")
+        except Exception as e:
+            print(f"WARNING: URLhaus failed ({e}); keeping previous hosts", file=sys.stderr)
 
     ttl = a.host_ttl_days * 86400
     hosts_state = {h: t for h, t in hosts_state.items() if now - t <= ttl and h not in SHARED_HOSTING}
