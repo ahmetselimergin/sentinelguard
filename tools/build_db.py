@@ -186,7 +186,7 @@ def main():
     stamp = dt.datetime.now(dt.timezone.utc)
     manifest = {
         "format": 1,
-        "version": int(stamp.strftime("%Y%m%d%H")),
+        "version": int(stamp.strftime("%Y%m%d%H%M")),  # minutes: two runs in one hour must differ
         "generated": stamp.strftime("%Y-%m-%dT%H:%M:%SZ"),
         "source": "MalwareBazaar, URLhaus (abuse.ch)",
         "files": files,
