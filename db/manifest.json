@@ -1,0 +1,23 @@
+{
+ "format": 1,
+ "version": 202611211104,
+ "generated": "2026-11-21T11:04:08Z",
+ "source": "MalwareBazaar, URLhaus (abuse.ch)",
+ "files": [
+  {
+   "name": "threats.bin",
+   "sha256": "bffc5ed8d31abefb7c692557948588226b4c01d9f8c21052641f8986a5648a8f",
+   "count": 95980
+  },
+  {
+   "name": "certs.bin",
+   "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+   "count": 0
+  },
+  {
+   "name": "domains.txt",
+   "sha256": "bdbbe930dc877ab9122e3c75fd794dc71cfde950918246dc8aa76757b75c0e24",
+   "count": 584
+  }
+ ]
+}
