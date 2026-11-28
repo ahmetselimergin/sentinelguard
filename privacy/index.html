@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sentinel Guard – Privacy Policy</title>
+<style>
+  body{font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:760px;margin:0 auto;padding:24px 16px;color:#111827;background:#f4f7fa}
+  h1,h2{line-height:1.25} h2{margin-top:2em}
+  @media (prefers-color-scheme:dark){body{color:#e4e9f2;background:#0b1220} a{color:#1fd1a5}}
+</style>
+</head>
+<body>
+<h1>Sentinel Guard Privacy Policy</h1>
+<p>Last updated: 18 November 2026</p>
+
+<h2>Summary</h2>
+<p>Sentinel Guard scans your phone <strong>on the device</strong>. It does not upload your list of apps, your files, the links you check, or any personal data. It has no ads, no analytics and no accounts.</p>
+
+<h2>What the app accesses on your phone</h2>
+<ul>
+  <li><strong>Installed apps</strong> (QUERY_ALL_PACKAGES): package names, permissions, signing certificates and the app files themselves, to compare them with known malware and check for risky behaviour patterns.</li>
+  <li><strong>Shared storage</strong> (All files access, MANAGE_EXTERNAL_STORAGE), only if you grant it and only when you start a file scan: files are read to compute their fingerprint (SHA-256) and, for app installers, their permissions, and compared with known malware on the device. If you don't grant it, you can instead pick a single folder. Files you quarantine are moved into the app's private storage and can be restored or deleted by you.</li>
+  <li><strong>Clean-up</strong>: with the same access, the app lists files that can be removed (leftover installers, identical duplicates, thumbnail caches, folders of uninstalled apps, empty folders, large files). Nothing is deleted unless you select it and confirm; deletion happens only on your device.</li>
+  <li><strong>Links you paste or share</strong> to the app: analysed locally; the link is never opened or sent anywhere.</li>
+  <li><strong>Device security settings</strong> (screen lock, patch level, USB debugging and similar) to show the device check.</li>
+</ul>
+<p>All results stay on your phone and are deleted when you uninstall the app. They are excluded from cloud backups.</p>
+
+<h2>Network use</h2>
+<p>The only network request the app makes is downloading the threat database from <code>ahmetselimergin.github.io</code> (GitHub Pages). This request contains no information about you or your device beyond what any web request contains (such as IP address, which GitHub may log under its own privacy policy). Every download is signature-verified before use.</p>
+
+<h2>Data sharing</h2>
+<p>No data is collected, so no data is shared or sold.</p>
+
+<h2>Children</h2>
+<p>The app is not directed at children and collects no data from anyone.</p>
+
+<h2>Contact</h2>
+<p>Questions: open an issue at the app's GitHub repository or use the developer contact on Google Play.</p>
+
+<hr>
+<h1 lang="tr">Gizlilik Politikası (Türkçe)</h1>
+<div lang="tr">
+<p>Sentinel Guard telefonunuzu <strong>cihaz üzerinde</strong> tarar. Uygulama listenizi, dosyalarınızı, kontrol ettiğiniz linkleri ya da herhangi bir kişisel veriyi yüklemez. Reklam, analiz aracı veya hesap yoktur.</p>
+<p>Uygulama; kurulu uygulamaların izinlerini, imza sertifikalarını ve dosyalarını, izin verirseniz ve yalnızca dosya taramasını başlattığınızda paylaşılan depolamadaki dosyaları ("Tüm dosyalara erişim"; vermezseniz yalnızca seçtiğiniz klasörü), paylaştığınız linkleri ve cihazın güvenlik ayarlarını, sadece tarama yapmak için ve yalnızca cihazda kullanır. Sonuçlar telefonunuzda kalır, bulut yedeklemesine dahil edilmez ve uygulama kaldırıldığında silinir.</p>
+<p>Temizlik özelliği silinebilecek dosyaları yalnızca listeler; siz seçip onaylamadan hiçbir şey silinmez ve silme yalnızca cihazınızda yapılır. Tek ağ isteği, tehdit veritabanının <code>ahmetselimergin.github.io</code> adresinden indirilmesidir. Bu istek sizinle ilgili bilgi içermez ve her indirme kullanılmadan önce imzayla doğrulanır. Veri toplanmadığı için hiçbir veri paylaşılmaz veya satılmaz.</p>
+</div>
+</body>
+</html>
